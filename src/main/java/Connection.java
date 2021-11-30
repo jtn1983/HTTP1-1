@@ -28,6 +28,7 @@ public class Connection extends Thread {
                 final var requestLine = in.readLine();
                 final var parts = requestLine.split(" ");
 
+                ///jhu
                 if (parts.length != 3) {
                     socket.close();
                     continue;

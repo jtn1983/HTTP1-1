@@ -11,8 +11,6 @@ import java.util.List;
 public class Connection extends Thread {
     private final Socket socket;
     private final List<String> validPaths;
-    private BufferedReader in;
-    private BufferedOutputStream out;
 
     public Connection(Socket socket, List<String> validPaths) {
         this.socket = socket;

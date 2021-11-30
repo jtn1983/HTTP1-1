@@ -3,10 +3,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
 public class Connection extends Thread {
     private final Socket socket;
@@ -33,7 +39,11 @@ public class Connection extends Thread {
                     continue;
                 }
 
-                final var path = parts[1];
+                URI uri = new URI(parts[1]);
+
+                var params = URLEncodedUtils.parse(uri, StandardCharsets.UTF_8);
+
+                final var path = uri.getPath();
                 if (!validPaths.contains(path)) {
                     out.write((
                             "HTTP/1.1 404 Not Found\r\n" +
@@ -75,9 +85,10 @@ public class Connection extends Thread {
                                 "Connection: close\r\n" +
                                 "\r\n"
                 ).getBytes());
+                System.out.println(params);
                 Files.copy(filePath, out);
                 out.flush();
-            } catch (IOException e) {
+            } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
             }
         }
